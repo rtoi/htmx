@@ -591,6 +591,7 @@ return (function () {
         }
 
         function querySelectorAllExt(elt, selector) {
+            if (selector.indexOf(",") < 0) {
             if (selector.indexOf("closest ") === 0) {
                 return [closest(elt, normalizeSelector(selector.substr(8)))];
             } else if (selector.indexOf("find ") === 0) {
@@ -609,6 +610,12 @@ return (function () {
                 return getDocument().querySelectorAll(normalizeSelector(selector));
             }
         }
+            var ret = [];
+            selector.split(',').forEach((item) => {
+                ret.push.apply(ret, querySelectorAllExt(elt, item.trim()));
+            });
+            return ret;
+        } 
 
         var scanForwardQuery = function(start, match) {
             var results = getDocument().querySelectorAll(match);
