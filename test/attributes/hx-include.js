@@ -224,5 +224,22 @@ describe("hx-include attribute", function() {
         this.server.respond();
         btn.innerHTML.should.equal("Clicked!");
     })
-
+    
+    it('Extended modifiers, i.e. `closest`, `this` etc.  can be used with normal modifiers in the hx-include selector', function () {
+        this.server.respondWith("POST", "/include", function (xhr) {
+            var params = getParameters(xhr);
+            params['i1'].should.equal("test");
+            params['i2'].should.equal("test");
+            params['i3'].should.equal("test");
+            xhr.respond(200, {}, "Clicked!")
+        });
+        make('<div id="i"><input name="i1" value="test"/>'+
+            '<button id="btn" hx-post="/include" hx-include="closest div, #id3, next input"></button></div>'+
+            '<input name="i2" value="test"/><input name="i3" id="id3" value="test"/>');
+        var btn = byId('btn')
+        btn.click();
+        this.server.respond();
+        btn.innerHTML.should.equal("Clicked!");
+    })
+    
 });
